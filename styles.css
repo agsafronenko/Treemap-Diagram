@@ -1,0 +1,86 @@
+html,
+body {
+  height: 99%;
+  --tooltip-color: rgba(250, 238, 238, 0.91);
+  --background-color: rgb(248, 247, 225);
+  background-color: var(--background-color);
+}
+
+#title {
+  margin: 20px auto 0 auto;
+  font-size: 30px;
+  font-weight: bold;
+  display: block;
+  text-align: center;
+}
+
+#description {
+  margin: 10px auto 0 auto;
+  font-size: 16px;
+  font-weight: 400;
+  display: block;
+  text-align: center;
+}
+
+#svg-container {
+  padding: 10px;
+  margin: 20px auto;
+  width: 1180px;
+  display: flex;
+  background-color: var(--background-color);
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 2px 6px;
+  border-radius: 10px;
+}
+
+svg {
+  margin: 0 auto;
+  display: block;
+}
+
+.tileText {
+  font-size: 10px;
+}
+
+#tooltip {
+  position: absolute;
+  top: 200px;
+  left: 200px;
+  opacity: 0%;
+  background-color: var(--tooltip-color);
+  width: fit-content;
+  height: fit-content;
+  color: black;
+  padding: 5px;
+  border-radius: 5px;
+  white-space: pre-wrap;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+#tooltip::before {
+  position: absolute;
+  content: "";
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-right: 10px solid var(--tooltip-color);
+  border-bottom: 5px solid transparent;
+  left: -9px;
+  top: 9px;
+}
+
+#legend {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+footer {
+  position: absolute;
+  font-size: small;
+  font-style: italic;
+  width: 99%;
+  font-weight: 600;
+  bottom: 7px;
+  text-align: center;
+}
