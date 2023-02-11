@@ -39,6 +39,7 @@ svg {
 
 .tileText {
   font-size: 10px;
+  padding: 5px;
 }
 
 #tooltip {

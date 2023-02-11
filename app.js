@@ -1,30 +1,82 @@
 //-----------------Data request----------------
+data = {
+  movies: {
+    name: "Movie Sales",
+    description: "Top 100 Highest Grossing Movies Grouped By Genre",
+    base: "",
+  },
+  games: {
+    name: "Video Game Sales",
+    description: "Top 100 Most Sold Video Games Grouped by Platform",
+    base: "",
+  },
+  kickstarter: {
+    name: "Kickstarter Pledges",
+    description: "Top 100 Most Pledged Kickstarter Campaigns Grouped By Category",
+    base: "",
+  },
+};
+
 (async function getData() {
-  const kickstarterPledges = await fetch("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/kickstarter-funding-data.json").then((response) => response.json());
-  const movieSales = await fetch("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-data.json").then((response) => response.json());
-  const videoGameSales = await fetch("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/video-game-sales-data.json").then((response) => response.json());
-  return buildTreeMap(kickstarterPledges, movieSales, videoGameSales);
+  data.movies.base = await fetch("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-data.json").then((response) => response.json());
+  data.games.base = await fetch("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/video-game-sales-data.json").then((response) => response.json());
+  data.kickstarter.base = kickstarterPledges = await fetch("https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/kickstarter-funding-data.json").then((response) => response.json());
+  return buildTreeMap(data.movies);
 })();
 
-function buildTreeMap(kickstarter, movies, games) {
+const buttonBox = d3.select("body").append("div");
+
+buttonBox
+  .append("button")
+  .text("Movies Data Set")
+  .on("click", () => {
+    d3.select("#title").remove();
+    d3.select("#description").remove();
+    d3.select("#svg-container").remove();
+
+    buildTreeMap(data.movies);
+  });
+
+buttonBox
+  .append("button")
+  .text("Video Game Data Set")
+  .on("click", () => {
+    d3.select("#title").remove();
+    d3.select("#description").remove();
+    d3.select("#svg-container").remove();
+
+    buildTreeMap(data.games);
+  });
+
+buttonBox
+  .append("button")
+  .text("Kickstarter Data Set")
+  .on("click", () => {
+    d3.select("#title").remove();
+    d3.select("#description").remove();
+    d3.select("#svg-container").remove();
+
+    buildTreeMap(data.kickstarter);
+  });
+
+function buildTreeMap(dataset) {
+  //-----------------Data declaration-------------
+
+  let dataHierarchy = d3
+    .hierarchy(dataset.base, (elem) => elem.children)
+    .sum((subElem) => subElem.value)
+    .sort((subElem1, subElem2) => subElem2.value - subElem1.value);
   //-----------------Header---------------------
 
-  d3.select("body").append("text").attr("id", "title").text("Video Game Sales");
+  d3.select("body").append("text").attr("id", "title").text(dataset.name);
 
-  d3.select("body").append("text").attr("id", "description").text("Top 100 Most Sold Video Games Grouped by Platform");
+  d3.select("body").append("text").attr("id", "description").text(dataset.description);
 
   //-----------------Creating main svg element ------------------
 
   width = 1000;
   height = 500;
   padding = 30;
-
-  let dataHierarchy = d3
-    .hierarchy(movies, (elem) => elem.children)
-    .sum((subElem) => subElem.value)
-    .sort((subElem1, subElem2) => subElem2.value - subElem1.value);
-
-  console.log("dataHieratchy", dataHierarchy);
 
   const svgContainer = d3.select("body").append("div").attr("id", "svg-container");
   const svg = svgContainer.append("svg").attr("width", width).attr("height", height);
@@ -47,7 +99,7 @@ function buildTreeMap(kickstarter, movies, games) {
     .domain([0, categories.length - 1])
     .interpolator(d3.interpolateSpectral);
 
-  // ------------------Bar Chart-----------------
+  // ------------------Tree map-----------------
 
   let tooltip = d3.select("body").append("div").attr("id", "tooltip");
 
@@ -92,11 +144,27 @@ function buildTreeMap(kickstarter, movies, games) {
     });
 
   mainRectangle
-    .append("text")
+    .append("foreignObject")
+    .attr("width", (d) => d.x1 - d.x0)
+    .attr("height", (d) => d.y1 - d.y0)
+    .append("xhtml:div")
     .attr("class", "tileText")
     .text((d) => d.data.name)
-    .attr("x", 5)
-    .attr("y", 20);
+    .on("mouseover", (e, d) => {
+      const tooltipText = `Name: ${d.data.name}\nCategory: ${d.data.category}\nValue: ${ccyFormat.format(d.data.value)}`;
+      tooltip
+        .style("opacity", 1)
+        .text(tooltipText)
+        .style("left", e.pageX + 9 + "px")
+        .style("top", e.pageY - 15 + "px")
+        .attr("data-value", d.data.value);
+    })
+    .on("mouseout", (event, d) => {
+      tooltip
+        .style("opacity", "0%")
+        .style("left", -2000 + "px")
+        .style("top", -2000 + "px");
+    });
 
   //-----------Legend--------------
   let rectSide = 20;
@@ -118,13 +186,14 @@ function buildTreeMap(kickstarter, movies, games) {
     .style("fill", (d, ind) => colorScale(ind));
 
   outerRectangle
+
     .append("text")
     .text((d) => d)
     .style("text-anchor", "middle")
     .attr("x", "50%")
     .attr("y", rectSide - 5);
-
-  //------------Footer--------------
-
-  d3.select("body").append("footer").text("This Treemap Diagram was created using: HTML, CSS, JavaScript and D3 svg-based visualization library");
 }
+
+//------------Footer--------------
+
+d3.select("body").append("footer").text("This Treemap Diagram was created using: HTML, CSS, JavaScript and D3 svg-based visualization library");
