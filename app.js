@@ -1,3 +1,6 @@
+// change the font-size for kickstarter pledges
+// check values in tooltip for video games sales data
+
 //-----------------Data request----------------
 data = {
   movies: {
@@ -24,7 +27,7 @@ data = {
   return buildTreeMap(data.movies);
 })();
 
-const buttonBox = d3.select("body").append("div");
+const buttonBox = d3.select("body").append("div").attr("id", "buttonBox");
 
 buttonBox
   .append("button")
@@ -94,10 +97,13 @@ function buildTreeMap(dataset) {
     if (!categories.includes(category)) categories.push(category);
   }
 
+  let darkTones = Math.floor(categories.length / 3.8);
+
   const colorScale = d3
     .scaleSequential()
     .domain([0, categories.length - 1])
-    .interpolator(d3.interpolateSpectral);
+    .interpolator(d3.interpolateRdYlBu)
+    .interpolator(d3.interpolateRainbow);
 
   // ------------------Tree map-----------------
 
@@ -119,9 +125,9 @@ function buildTreeMap(dataset) {
   mainRectangle
     .append("rect")
     .attr("class", "tile")
-    .attr("fill", (d) => {
-      return colorScale(categories.findIndex((elem) => elem === d.data.category));
-    })
+    .attr("fill", (d) => colorScale(categories.findIndex((elem) => elem === d.data.category)))
+    .attr("stroke-width", 0.2)
+    .attr("stroke", "black")
     .attr("data-name", (d) => d.data.name)
     .attr("data-category", (d) => d.data.category)
     .attr("data-value", (d) => d.data.value)
@@ -147,6 +153,7 @@ function buildTreeMap(dataset) {
     .append("foreignObject")
     .attr("width", (d) => d.x1 - d.x0)
     .attr("height", (d) => d.y1 - d.y0)
+    .attr("y", (d) => (d.y1 - d.y0) / 10)
     .append("xhtml:div")
     .attr("class", "tileText")
     .text((d) => d.data.name)
@@ -189,6 +196,7 @@ function buildTreeMap(dataset) {
 
     .append("text")
     .text((d) => d)
+    .attr("class", "legendText")
     .style("text-anchor", "middle")
     .attr("x", "50%")
     .attr("y", rectSide - 5);

@@ -2,8 +2,21 @@ html,
 body {
   height: 99%;
   --tooltip-color: rgba(250, 238, 238, 0.91);
-  --background-color: rgb(248, 247, 225);
+  --background-color: rgba(79, 74, 74, 0.684);
   background-color: var(--background-color);
+}
+
+#buttonBox {
+  margin: auto;
+  display: flex;
+  justify-content: center;
+}
+
+button {
+  border-radius: 5px;
+  border: 1px solid white;
+  background-color: black;
+  color: white;
 }
 
 #title {
@@ -12,6 +25,7 @@ body {
   font-weight: bold;
   display: block;
   text-align: center;
+  color: white;
 }
 
 #description {
@@ -20,6 +34,7 @@ body {
   font-weight: 400;
   display: block;
   text-align: center;
+  color: white;
 }
 
 #svg-container {
@@ -39,7 +54,11 @@ svg {
 
 .tileText {
   font-size: 10px;
-  padding: 5px;
+  text-align: center;
+  margin: auto;
+  color: white;
+  font-weight: 600;
+  text-shadow: 2px 2px 2px #000000;
 }
 
 #tooltip {
@@ -76,6 +95,12 @@ svg {
   font-weight: 800;
 }
 
+.legendText {
+  fill: white;
+  font-weight: 600;
+  text-shadow: 2px 2px 2px #000000;
+}
+
 footer {
   position: absolute;
   font-size: small;
@@ -84,4 +109,5 @@ footer {
   font-weight: 600;
   bottom: 7px;
   text-align: center;
+  color: white;
 }
