@@ -1,9 +1,16 @@
+:root {
+  --tooltip-color: rgba(250, 238, 238, 0.91);
+  --background-color: rgba(79, 74, 74, 0.684);
+  --text-color: white;
+  --shadow-color: black;
+  background-color: var(--background-color);
+}
+
 html,
 body {
   height: 99%;
-  --tooltip-color: rgba(250, 238, 238, 0.91);
-  --background-color: rgba(79, 74, 74, 0.684);
   background-color: var(--background-color);
+  filter: contrast(1);
 }
 
 #buttonBox {
@@ -14,9 +21,11 @@ body {
 
 button {
   border-radius: 5px;
-  border: 1px solid white;
-  background-color: black;
-  color: white;
+  border: 1px solid var(--text-color);
+  background-color: var(--background-color);
+  filter: contrast(1.75);
+  color: var(--text-color);
+  margin: 2px;
 }
 
 #title {
@@ -25,7 +34,7 @@ button {
   font-weight: bold;
   display: block;
   text-align: center;
-  color: white;
+  color: var(--text-color);
 }
 
 #description {
@@ -34,7 +43,7 @@ button {
   font-weight: 400;
   display: block;
   text-align: center;
-  color: white;
+  color: var(--text-color);
 }
 
 #svg-container {
@@ -43,6 +52,7 @@ button {
   width: 1180px;
   display: flex;
   background-color: var(--background-color);
+  filter: contrast(1.25);
   box-shadow: rgba(0, 0, 0, 0.25) 0px 2px 6px;
   border-radius: 10px;
 }
@@ -56,9 +66,9 @@ svg {
   font-size: 10px;
   text-align: center;
   margin: auto;
-  color: white;
+  color: var(--text-color);
   font-weight: 600;
-  text-shadow: 2px 2px 2px #000000;
+  text-shadow: 2px 2px 2px var(--shadow-color);
 }
 
 #tooltip {
@@ -69,7 +79,7 @@ svg {
   background-color: var(--tooltip-color);
   width: fit-content;
   height: fit-content;
-  color: black;
+  color: var(--shadow-color);
   padding: 5px;
   border-radius: 5px;
   white-space: pre-wrap;
@@ -96,9 +106,9 @@ svg {
 }
 
 .legendText {
-  fill: white;
+  fill: var(--text-color);
   font-weight: 600;
-  text-shadow: 2px 2px 2px #000000;
+  text-shadow: 2px 2px 2px var(--shadow-color);
 }
 
 footer {
@@ -109,5 +119,5 @@ footer {
   font-weight: 600;
   bottom: 7px;
   text-align: center;
-  color: white;
+  color: var(--text-color);
 }

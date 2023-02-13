@@ -1,6 +1,3 @@
-// change the font-size for kickstarter pledges
-// check values in tooltip for video games sales data
-
 //-----------------Data request----------------
 data = {
   movies: {
@@ -29,14 +26,17 @@ data = {
 
 const buttonBox = d3.select("body").append("div").attr("id", "buttonBox");
 
+function deleteAll() {
+  d3.select("#title").remove();
+  d3.select("#description").remove();
+  d3.select("#svg-container").remove();
+}
+
 buttonBox
   .append("button")
   .text("Movies Data Set")
   .on("click", () => {
-    d3.select("#title").remove();
-    d3.select("#description").remove();
-    d3.select("#svg-container").remove();
-
+    deleteAll();
     buildTreeMap(data.movies);
   });
 
@@ -44,10 +44,7 @@ buttonBox
   .append("button")
   .text("Video Game Data Set")
   .on("click", () => {
-    d3.select("#title").remove();
-    d3.select("#description").remove();
-    d3.select("#svg-container").remove();
-
+    deleteAll();
     buildTreeMap(data.games);
   });
 
@@ -55,10 +52,7 @@ buttonBox
   .append("button")
   .text("Kickstarter Data Set")
   .on("click", () => {
-    d3.select("#title").remove();
-    d3.select("#description").remove();
-    d3.select("#svg-container").remove();
-
+    deleteAll();
     buildTreeMap(data.kickstarter);
   });
 
@@ -69,6 +63,7 @@ function buildTreeMap(dataset) {
     .hierarchy(dataset.base, (elem) => elem.children)
     .sum((subElem) => subElem.value)
     .sort((subElem1, subElem2) => subElem2.value - subElem1.value);
+
   //-----------------Header---------------------
 
   d3.select("body").append("text").attr("id", "title").text(dataset.name);
@@ -97,12 +92,9 @@ function buildTreeMap(dataset) {
     if (!categories.includes(category)) categories.push(category);
   }
 
-  let darkTones = Math.floor(categories.length / 3.8);
-
   const colorScale = d3
     .scaleSequential()
     .domain([0, categories.length - 1])
-    .interpolator(d3.interpolateRdYlBu)
     .interpolator(d3.interpolateRainbow);
 
   // ------------------Tree map-----------------
@@ -134,7 +126,7 @@ function buildTreeMap(dataset) {
     .attr("width", (d) => d.x1 - d.x0)
     .attr("height", (d) => d.y1 - d.y0)
     .on("mousemove", (e, d) => {
-      const tooltipText = `Name: ${d.data.name}\nCategory: ${d.data.category}\nValue: ${ccyFormat.format(d.data.value)}`;
+      const tooltipText = `Name: ${d.data.name}\nCategory: ${d.data.category}\nValue: ${dataset.name === "Video Game Sales" ? d.data.value + " mln. copies" : ccyFormat.format(d.data.value)}`;
       tooltip
         .style("opacity", 1)
         .text(tooltipText)
@@ -158,7 +150,7 @@ function buildTreeMap(dataset) {
     .attr("class", "tileText")
     .text((d) => d.data.name)
     .on("mouseover", (e, d) => {
-      const tooltipText = `Name: ${d.data.name}\nCategory: ${d.data.category}\nValue: ${ccyFormat.format(d.data.value)}`;
+      const tooltipText = `Name: ${d.data.name}\nCategory: ${d.data.category}\nValue: ${dataset.name === "Video Game Sales" ? d.data.value + " mln. copies" : ccyFormat.format(d.data.value)}`;
       tooltip
         .style("opacity", 1)
         .text(tooltipText)
@@ -174,6 +166,7 @@ function buildTreeMap(dataset) {
     });
 
   //-----------Legend--------------
+
   let rectSide = 20;
 
   const legend = svgContainer.append("svg").attr("id", "legend").attr("width", 150).attr("height", height);
@@ -189,7 +182,7 @@ function buildTreeMap(dataset) {
     .append("rect")
     .attr("class", "legend-item")
     .attr("width", "100%")
-    .attr("height", (d, ind) => rectSide)
+    .attr("height", rectSide)
     .style("fill", (d, ind) => colorScale(ind));
 
   outerRectangle
